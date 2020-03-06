@@ -215,6 +215,10 @@ class PhotosExporter {
         return sourceUrl
     }
     
+    private func sourceUrlOfLivePhotoVieoMediaObject(mediaObject: MLMediaObject) -> URL? {
+        return livePhotoVideo(mediaObject: mediaObject)
+    }
+    
     let stopWatchCheckFileSize = StopWatch("check file size", LogLevel.info, addFileSizes: false)
 
     private func getLinkToUrl(candidatesToLinkTo: [FlatFolderDescriptor], mediaObject: MLMediaObject, sourceUrl: URL) throws -> URL? {
@@ -322,6 +326,52 @@ class PhotosExporter {
                         }
                     }
                     
+                    // LIVE PHOTO VIDEO
+                    
+                    // autorelease periodically
+                    try autoreleasepool {
+                        let sourceUrl = sourceUrlOfLivePhotoVieoMediaObject(mediaObject: mediaObject)
+                        
+                        if let sourceUrl = sourceUrl {
+                            let targetUrl = URL.init(fileURLWithPath: getFlatPath(FlatFolderDescriptor(folderName: flatPath, countSubFolders: countSubFolders), mediaObject, pathExtension: sourceUrl.pathExtension))
+                            if !fileManager.fileExists(atPath: targetUrl.path) {
+                                let linkToUrl = try getLinkToUrl(candidatesToLinkTo: candidatesToLinkTo, mediaObject: mediaObject, sourceUrl: sourceUrl)
+                                
+                                if let linkToUrl = linkToUrl {
+                                    logger.debug("\(index): link unchanged image: \(sourceUrl); link to: \(linkToUrl)")
+                                    do {
+                                        stopWatchFileManagerLinkItem.start()
+                                        try fileManager.linkItem(at: linkToUrl, to: targetUrl)
+                                        statistics.countLinkedFiles += 1
+                                        stopWatchFileManagerLinkItem.stop()
+                                    }
+                                    catch let error as NSError {
+                                        logger.error("\(index): Unable to link file: \(error)")
+                                        throw error
+                                    }
+                                } else {
+                                    try copyOrLinkFileInPhotosLibrary(sourceUrl: sourceUrl, targetUrl: targetUrl)
+                                    
+                                    let fotoDateAsTimerInterval = mediaObject.attributes["DateAsTimerInterval"] as! TimeInterval
+                                    let fotoDate = Date(timeIntervalSinceReferenceDate: fotoDateAsTimerInterval)
+                                    let attributes = [FileAttributeKey.modificationDate : fotoDate]
+                                    stopWatchFileManagerSetAttributes.start()
+                                    do {
+                                        try fileManager.setAttributes(attributes, ofItemAtPath: targetUrl.path)
+                                    }
+                                    catch let error as NSError {
+                                        logger.error("\(index): Unable to set attributes on file: \(error)")
+                                        throw error
+                                    }
+                                    stopWatchFileManagerSetAttributes.stop()
+                                }
+                            }
+                        }
+                        else {
+                            logger.warn("mediaObject has no live photo video")
+                        }
+                    }
+                    
                     stopWatchCopyMediaObject.stop()
                 }
 
@@ -383,6 +433,7 @@ class PhotosExporter {
                         for mediaObject in mediaGroup.mediaObjects! {
                             if exportMediaObjectFilter(mediaObject) {
                                 try exportFoto(mediaObject: mediaObject, flatFolder: flatFolder, targetPath: targetPath, exportOriginals: exportOriginals)
+                                try exportLiveFoto(mediaObject: mediaObject, flatFolder: flatFolder, targetPath: targetPath)
                             }
                         }
                     }
@@ -421,8 +472,37 @@ class PhotosExporter {
             try fileManager.linkItem(at: linkTargetUrl, to: targetUrl)
             statistics.countLinkedFiles += 1
             stopWatchFileManagerLinkItem.stop()
+            
+            //TODO: convert heic to jpg
+            
         } else {
-            logger.warn("Source URL of mediaObject unknown: \(mediaObject.name!)")
+            logger.warn("Source URL of mediaObject unknown: \(String(describing: mediaObject.name))")
+        }
+    }
+    
+    private func exportLiveFoto(mediaObject: MLMediaObject, flatFolder: FlatFolderDescriptor, targetPath: String) throws {
+        let sourceUrl = sourceUrlOfLivePhotoVieoMediaObject(mediaObject: mediaObject)
+        if let sourceUrl = sourceUrl {
+            let linkTargetUrl = URL.init(fileURLWithPath: getFlatPath(flatFolder, mediaObject, pathExtension: sourceUrl.pathExtension))
+            
+            // get unique target name
+            let fotoName = getFotoName(mediaObject: mediaObject, sourceUrl: sourceUrl)
+            var targetUrl = URL.init(fileURLWithPath: "\(targetPath)/\(fotoName).\(sourceUrl.pathExtension)")
+            logger.debug("Export live foto: \(fotoName) to \(targetUrl)")
+            var i = 1
+            while fileManager.fileExists(atPath: targetUrl.path) {
+                targetUrl = URL.init(fileURLWithPath: "\(targetPath)/\(fotoName) (\(i)).\(sourceUrl.pathExtension)")
+                i += 1
+            }
+            
+            logger.debug("link image: \(targetUrl.lastPathComponent)")
+            stopWatchFileManagerLinkItem.start()
+            try fileManager.linkItem(at: linkTargetUrl, to: targetUrl)
+            statistics.countLinkedFiles += 1
+            stopWatchFileManagerLinkItem.stop()
+            
+            //TODO: convert heic to jpg
+            
         }
     }
     

@@ -21,3 +21,13 @@ func hasKeyword(mediaObject: MLMediaObject, keyword: String) -> Bool {
     return false
 }
 
+/**
+ * Return the live video of mediaObject
+ */
+func livePhotoVideo(mediaObject: MLMediaObject) -> URL? {
+    if let liveVideo = mediaObject.attributes["videoComplURL"] as? URL {
+        return liveVideo
+    }
+    return nil
+}
+

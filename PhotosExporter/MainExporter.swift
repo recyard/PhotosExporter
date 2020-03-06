@@ -29,7 +29,7 @@ func export() {
     //////////////////////////////////////////////////////////////////////////////////////
     
     // define the target path (this is the root path for your backups)
-    let localPhotosExporter = SnapshotPhotosExporter.init(targetPath: "/Users/andreas/Pictures/Fotos Library export")
+    let localPhotosExporter = SnapshotPhotosExporter.init(targetPath: "/Users/davide/Pictures/export")
     localPhotosExporter.exportMediaGroupFilter = exportMediaGroupFilter
     localPhotosExporter.exportPhotosOfMediaGroupFilter = exportPhotosOfMediaGroupFilter
     localPhotosExporter.exportPhotos()
@@ -40,9 +40,9 @@ func export() {
     //////////////////////////////////////////////////////////////////////////////////////
     
     // define the target path (this is the root path for your backups)
-    let externalDiskPhotosExporter = IncrementalPhotosExporter.init(targetPath: "/Volumes/WD-4TB/Fotos Library export")
-    externalDiskPhotosExporter.exportMediaGroupFilter = exportMediaGroupFilter
-    externalDiskPhotosExporter.exportPhotosOfMediaGroupFilter = exportPhotosOfMediaGroupFilter
-    externalDiskPhotosExporter.exportPhotos()
+//    let externalDiskPhotosExporter = IncrementalPhotosExporter.init(targetPath: "/Volumes/WD-4TB/Fotos Library export")
+//    externalDiskPhotosExporter.exportMediaGroupFilter = exportMediaGroupFilter
+//    externalDiskPhotosExporter.exportPhotosOfMediaGroupFilter = exportPhotosOfMediaGroupFilter
+//    externalDiskPhotosExporter.exportPhotos()
 }
 
