@@ -8,6 +8,9 @@
 
 import Foundation
 import MediaLibrary
+import CoreImage
+import AppKit
+import Photos
 
 
 enum PhotosExporterError: Error {
@@ -74,7 +77,7 @@ class PhotosExporter {
     // set to true if calculated photos should be exported
     var exportCalculated = true
     // set to true if original photos should be exported
-    var exportOriginals = true
+    var exportOriginals = false
 
     let fileManager = FileManager.default
 
@@ -90,12 +93,32 @@ class PhotosExporter {
     private static var metadataReader: MetadataLoader?
     
     var statistics = Statistics()
+    
+    var allPhotos: PHFetchResult<PHAsset>?
+    
 
     init(targetPath: String) {
         self.targetPath = targetPath
     }
     
     func exportPhotos() {
+        
+        if #available(OSX 10.15, *) {
+            let allPhotosOptions = PHFetchOptions()
+            allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+            allPhotos = PHAsset.fetchAssets(with: allPhotosOptions)
+            
+            if let photos = allPhotos {
+                
+                for i in 0...photos.count {
+                    logger.debug("photo \(photos.object(at: i))")
+                }
+
+            }
+        }
+        
+        
+        
         if !fileManager.fileExists(atPath: targetPath) {
             logger.error("The folder at targetPath=\(targetPath) doesn't exist. Create it before running the PhotosExporter.")
             return
@@ -473,7 +496,28 @@ class PhotosExporter {
             statistics.countLinkedFiles += 1
             stopWatchFileManagerLinkItem.stop()
             
-            //TODO: convert heic to jpg
+            
+            if sourceUrl.pathExtension.lowercased() == "heic" {
+                
+                if let image = CIImage(contentsOf: sourceUrl) {
+                    let context = CIContext()
+                    let data = context.jpegRepresentation(of: image, colorSpace: CGColorSpaceCreateDeviceRGB(), options: [kCGImageDestinationLossyCompressionQuality as CIImageRepresentationOption:0.8])
+                    let targetJPEGUrl = URL.init(fileURLWithPath: "\(targetPath)/\(fotoName).jpg")
+                    do {
+                        try data?.write(to: targetJPEGUrl)
+                    } catch {
+                        logger.error("Impossible to convert heic to jpeg : \(fotoName) to \(targetJPEGUrl). Error: \(error)")
+                    }
+                    
+                    do {
+                        if let creationDate = try fileManager.attributesOfItem(atPath: sourceUrl.path)[FileAttributeKey.creationDate] as? Date {
+                            try fileManager.setAttributes([FileAttributeKey.creationDate:creationDate], ofItemAtPath: targetJPEGUrl.path)
+                        }
+                    } catch {
+                        logger.error("Impossible to set creationDate to jpeg : \(fotoName) to \(targetJPEGUrl). Error: \(error)")
+                    }
+                }
+            }
             
         } else {
             logger.warn("Source URL of mediaObject unknown: \(String(describing: mediaObject.name))")
@@ -501,7 +545,6 @@ class PhotosExporter {
             statistics.countLinkedFiles += 1
             stopWatchFileManagerLinkItem.stop()
             
-            //TODO: convert heic to jpg
             
         }
     }
