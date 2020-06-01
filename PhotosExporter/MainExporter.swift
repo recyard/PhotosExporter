@@ -55,7 +55,8 @@ func export() {
             let assetResources = PHAssetResource.assetResources(for: asset)
             for j in 0..<assetResources.count {
                 let resource = assetResources[j]
-                print(resource.type.rawValue)
+                print(resource.originalFilename)
+                printResourceType(type: resource.type)
             }
             assetsFlags[i]+=1
         }
@@ -74,7 +75,7 @@ func export() {
             print(resource.originalFilename)
             
             let url = backDir.appendingPathComponent(resource.originalFilename)
-            PHAssetResourceManager.default().writeData(for: resource, toFile: url, options: arrOptions, completionHandler: { (e) -> Void in
+            PHAssetResourceManager.default().writeData(for: resource, toFile: url, options: arrOptions, completionHandler: { (e) in
                 if e != nil {
                     print(e!.localizedDescription)
                 } else {
@@ -93,4 +94,35 @@ func isValidAsset(phAsset: PHAsset, start: Date, end: Date) -> Bool {
         return true
     }
     return false
+}
+
+func printResourceType(type: PHAssetResourceType) {
+    switch type {
+    case .video:
+        print("video")
+    case .photo:
+        print("photo")
+    case .pairedVideo:
+        print("pairedVideo")
+    case .fullSizeVideo:
+        print("fullSizeVideo")
+    case .fullSizePhoto:
+        print("fullSizePhoto")
+    case .fullSizePairedVideo:
+        print("fullSizePairedVideo")
+    case .audio:
+        print("audio")
+    case .alternatePhoto:
+        print("alternatePhoto")
+    case .adjustmentData:
+        print("adjustmentData")
+    case .adjustmentBaseVideo:
+        print("adjustmentBaseVideo")
+    case .adjustmentBasePhoto:
+        print("adjustmentBasePhoto")
+    case .adjustmentBasePairedVideo:
+        print("adjustmentBasePairedVideo")
+    default:
+        print("")
+    }
 }
