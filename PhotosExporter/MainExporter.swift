@@ -7,42 +7,100 @@
 //
 
 import Foundation
-import MediaLibrary
+import Photos
 
 func export() {
-    // define which media groups should be exported
-    let exportMediaGroupFilter = { (mediaGroup: MLMediaGroup) -> Bool in
-        // export all media groups
-        return true
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyyMMdd"
+    let timeFilterStart = formatter.date(from: "20160101")
+    if timeFilterStart == nil {
+        print("Wrong date format??")
+        return
+    }
+    let timeFilterEnd = Date()
+    
+    let downloads = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
+    if downloads == nil {
+        print("Downloads???")
+        return
     }
     
-    // define for which media groups the photos should be exported
-    let exportPhotosOfMediaGroupFilter = { (mediaGroup: MLMediaGroup) -> Bool in
-        return ["com.apple.Photos.Album", "com.apple.Photos.SmartAlbum", "com.apple.Photos.CollectionGroup", "com.apple.Photos.MomentGroup", "com.apple.Photos.YearGroup", "com.apple.Photos.PlacesCountryAlbum", "com.apple.Photos.PlacesProvinceAlbum", "com.apple.Photos.PlacesCityAlbum", "com.apple.Photos.PlacesPointOfInterestAlbum", "com.apple.Photos.FacesAlbum", "com.apple.Photos.VideosGroup", "com.apple.Photos.FrontCameraGroup", "com.apple.Photos.PanoramasGroup", "com.apple.Photos.BurstGroup", "com.apple.Photos.ScreenshotGroup"].contains(mediaGroup.typeIdentifier) &&
-            !("com.apple.Photos.FacesAlbum" == mediaGroup.typeIdentifier && mediaGroup.parent?.typeIdentifier == "com.apple.Photos.AlbumsGroup") &&
-            !("com.apple.Photos.PlacesAlbum" == mediaGroup.typeIdentifier && mediaGroup.parent?.typeIdentifier == "com.apple.Photos.RootGroup")
+    let backDir = downloads!.appendingPathComponent("temp")
+    let tagPath = backDir.appendingPathComponent("tag")
+    let text = "time"
+    do {
+        try text.write(to: tagPath, atomically: true, encoding: .utf8)
+    } catch {
+        
     }
     
-    //////////////////////////////////////////////////////////////////////////////////////
-    // Export to local disk in simple export mode (snapshot folder, with hard links
-    // to the original files to save disk space)
-    //////////////////////////////////////////////////////////////////////////////////////
+    PHPhotoLibrary.requestAuthorization { (status) in
+        switch status {
+        case .authorized:
+            print("Photo library access granted.")
+        default:
+            print("Photo library access denied.")
+        }
+    }
     
-    // define the target path (this is the root path for your backups)
-    let localPhotosExporter = SnapshotPhotosExporter.init(targetPath: "/Users/davide/Pictures/export")
-    localPhotosExporter.exportMediaGroupFilter = exportMediaGroupFilter
-    localPhotosExporter.exportPhotosOfMediaGroupFilter = exportPhotosOfMediaGroupFilter
-    localPhotosExporter.exportPhotos()
+    while PHPhotoLibrary.authorizationStatus() != .authorized {
+        sleep(1)
+        if PHPhotoLibrary.authorizationStatus() == .denied {
+            return
+        }
+    }
+    
+    let fetchOptions = PHFetchOptions()
+    fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+    let assets = PHAsset.fetchAssets(with: fetchOptions)
+    
+    print("Total " + String(assets.countOfAssets(with: .image)) + " Photos," + String(assets.countOfAssets(with: .video)) + " Videos.")
+    
+    var filteredAssets = 0
+    var filteredAssetResources = 0
+    for i in 0..<assets.count {
+        let asset = assets.object(at: i)
+        if isValidAsset(phAsset: asset, start: timeFilterStart!, end: timeFilterEnd) {
+            filteredAssets+=1
+        }
+    }
+    
+    var flags = Array(repeating: 0, count: filteredAssets)
     
     
-    //////////////////////////////////////////////////////////////////////////////////////
-    // Export to external disk in "time machine" mode (one folder for each export date)
-    //////////////////////////////////////////////////////////////////////////////////////
+    let arrOptions = PHAssetResourceRequestOptions()
+    arrOptions.isNetworkAccessAllowed = false
     
-    // define the target path (this is the root path for your backups)
-//    let externalDiskPhotosExporter = IncrementalPhotosExporter.init(targetPath: "/Volumes/WD-4TB/Fotos Library export")
-//    externalDiskPhotosExporter.exportMediaGroupFilter = exportMediaGroupFilter
-//    externalDiskPhotosExporter.exportPhotosOfMediaGroupFilter = exportPhotosOfMediaGroupFilter
-//    externalDiskPhotosExporter.exportPhotos()
+    
+    for i in 0..<10 {
+        let asset = assets.object(at: i)
+        
+        let assetResources = PHAssetResource.assetResources(for: asset)
+        for j in 0..<assetResources.count {
+            let resource = assetResources[j]
+            print(resource.originalFilename)
+            
+            let url = backDir.appendingPathComponent(resource.originalFilename)
+            PHAssetResourceManager.default().writeData(for: resource, toFile: url, options: arrOptions, completionHandler: { (e) -> Void in
+                if e != nil {
+                    print(e!.localizedDescription)
+                } else {
+                    
+                }
+            })
+        }
+        
+        print()
+    }
+    
+    
+    
+    sleep(30)
 }
 
+func isValidAsset(phAsset: PHAsset, start: Date, end: Date) -> Bool {
+    if (phAsset.mediaType == .image || phAsset.mediaType == .video) && phAsset.creationDate != nil && phAsset.creationDate! >= start && phAsset.creationDate! <= end {
+        return true
+    }
+    return false
+}
