@@ -2,9 +2,6 @@
 //  Main.swift
 //  PhotosExporter
 //
-//  Created by Andreas Bentele on 10.02.18.
-//  Copyright © 2018 Andreas Bentele. All rights reserved.
-//
 
 import Foundation
 import Photos
@@ -12,7 +9,7 @@ import Photos
 func export() {
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyyMMdd"
-    let timeFilterStart = formatter.date(from: "20160101")
+    let timeFilterStart = formatter.date(from: "20150101")
     if timeFilterStart == nil {
         print("Wrong date format??")
         return
@@ -55,16 +52,15 @@ func export() {
             let assetResources = PHAssetResource.assetResources(for: asset)
             for j in 0..<assetResources.count {
                 let resource = assetResources[j]
-                print(resource.originalFilename)
-                printResourceType(type: resource.type)
+                if isValidAssetResource(assetResource: resource) {
+                    assetsFlags[i]+=1
+                }
             }
-            assetsFlags[i]+=1
         }
     }
     
     let arrOptions = PHAssetResourceRequestOptions()
     arrOptions.isNetworkAccessAllowed = false
-    
     
     for i in 0..<0 {
         let asset = assets.object(at: i)
@@ -91,6 +87,13 @@ func export() {
 
 func isValidAsset(phAsset: PHAsset, start: Date, end: Date) -> Bool {
     if (phAsset.mediaType == .image || phAsset.mediaType == .video) && phAsset.creationDate != nil && phAsset.creationDate! >= start && phAsset.creationDate! <= end {
+        return true
+    }
+    return false
+}
+
+func isValidAssetResource(assetResource: PHAssetResource) -> Bool {
+    if assetResource.type == .photo || assetResource.type == .fullSizePhoto || assetResource.type == .video || assetResource.type == .pairedVideo || assetResource.type == .fullSizePairedVideo || assetResource.type == .fullSizeVideo  {
         return true
     }
     return false
