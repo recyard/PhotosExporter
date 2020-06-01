@@ -21,7 +21,12 @@ func export() {
         print("Downloads???")
         return
     }
-    let backDir = downloads!.appendingPathComponent("temp")
+    let backDir = downloads!.appendingPathComponent("tmp")
+    let contents = try! FileManager.default.contentsOfDirectory(atPath: backDir.path)
+    if contents.count > 0 {
+        print("Make sure the destination folder is empty.")
+        return
+    }
     
     PHPhotoLibrary.requestAuthorization { (status) in
         switch status {
@@ -46,43 +51,57 @@ func export() {
     print("Total " + String(assets.countOfAssets(with: .image)) + " Photos," + String(assets.countOfAssets(with: .video)) + " Videos.")
     
     var assetsFlags = Array(repeating: 0, count: assets.count)
+    var exportAssets = 0
+    var exportAssetResources = 0
     for i in 0..<assets.count {
         let asset = assets.object(at: i)
         if isValidAsset(phAsset: asset, start: timeFilterStart!, end: timeFilterEnd) {
+            exportAssets+=1
             let assetResources = PHAssetResource.assetResources(for: asset)
             for j in 0..<assetResources.count {
                 let resource = assetResources[j]
                 if isValidAssetResource(assetResource: resource) {
                     assetsFlags[i]+=1
+                    exportAssetResources+=1
                 }
             }
         }
     }
     
+    print("Exporting " + String(exportAssets) + " Photo Assets, " + String(exportAssetResources) + " AssetResources.")
+    
     let arrOptions = PHAssetResourceRequestOptions()
     arrOptions.isNetworkAccessAllowed = false
-    
-    for i in 0..<0 {
-        let asset = assets.object(at: i)
+    var namesPool: [String] = []
+    for i in 0..<assets.count {
+        if assetsFlags[i] <= 0 {
+            continue
+        }
         
+        let asset = assets.object(at: i)
         let assetResources = PHAssetResource.assetResources(for: asset)
         for j in 0..<assetResources.count {
             let resource = assetResources[j]
-            print(resource.originalFilename)
+            let name = determineName(assetResource: resource, createTime: asset.creationDate!, pool: namesPool)
+            print(name)
+            namesPool.append(name)
+            continue
             
-            let url = backDir.appendingPathComponent(resource.originalFilename)
+            let url = backDir.appendingPathComponent(name)
+            if FileManager.default.fileExists(atPath: url.path) {
+                print(url.absoluteString + " already exists.")
+                return
+            }
             PHAssetResourceManager.default().writeData(for: resource, toFile: url, options: arrOptions, completionHandler: { (e) in
                 if e != nil {
                     print(e!.localizedDescription)
+                    exit(1)
                 } else {
                     assetsFlags[i]-=1
                 }
             })
         }
-        
-        print()
     }
-    
 }
 
 func isValidAsset(phAsset: PHAsset, start: Date, end: Date) -> Bool {
@@ -97,6 +116,15 @@ func isValidAssetResource(assetResource: PHAssetResource) -> Bool {
         return true
     }
     return false
+}
+
+func determineName(assetResource: PHAssetResource, createTime: Date, pool: [String]) -> String {
+    let origNameSplit = assetResource.originalFilename.split(separator: ".")
+    let ext = origNameSplit[origNameSplit.count - 1].lowercased()
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyyMMdd-HHmm"
+    formatter.timeZone = TimeZone.current
+    return formatter.string(from: createTime) + "." + ext
 }
 
 func printResourceType(type: PHAssetResourceType) {
