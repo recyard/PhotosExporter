@@ -5,26 +5,44 @@
 
 import Foundation
 import Photos
+import Cocoa
 
-func export() {
+func export(subdir: String, startTime: String, endTime: String, console: NSView) {
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyyMMdd"
-    let timeFilterStart = formatter.date(from: "20150101")
+    
+    let timeFilterStart = formatter.date(from: startTime)
     if timeFilterStart == nil {
-        print("Wrong date format??")
+        console.insertText("Wrong start date format, use yyyyMMdd format.\n")
         return
     }
-    let timeFilterEnd = Date()
-    
+    var timeFilterEnd = Date()
+    if !endTime.isEmpty {
+        let tempTimeFilterEnd = formatter.date(from: endTime)
+        if tempTimeFilterEnd == nil {
+            console.insertText("Wrong end date format, use yyyyMMdd format.\n")
+            return
+        }
+        timeFilterEnd = tempTimeFilterEnd!
+    }
+        
     let downloads = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
     if downloads == nil {
-        print("Downloads???")
+        console.insertText("Downloads folder doesn't exist.\n")
         return
     }
-    let backDir = downloads!.appendingPathComponent("tmp")
+    if subdir.isEmpty {
+        console.insertText("Destination folder is not set.\n")
+        return
+    }
+    let backDir = downloads!.appendingPathComponent(subdir)
+    if !FileManager.default.fileExists(atPath: backDir.path) {
+        console.insertText("Destination folder desn't exist.\n")
+        return
+    }
     let contents = try! FileManager.default.contentsOfDirectory(atPath: backDir.path)
     if contents.count > 0 {
-        print("Make sure the destination folder is empty.")
+        console.insertText("Make sure the destination folder is empty before the export.\n")
         return
     }
     
@@ -48,7 +66,7 @@ func export() {
     fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
     let assets = PHAsset.fetchAssets(with: fetchOptions)
     
-    print("Total " + String(assets.countOfAssets(with: .image)) + " Photos," + String(assets.countOfAssets(with: .video)) + " Videos.")
+    console.insertText("\nTotal " + String(assets.countOfAssets(with: .image)) + " Photos, " + String(assets.countOfAssets(with: .video)) + " Videos.\n")
     
     var assetsFlags = Array(repeating: 0, count: assets.count)
     var exportAssets = 0
@@ -68,40 +86,57 @@ func export() {
         }
     }
     
-    print("Exporting " + String(exportAssets) + " Photo Assets, " + String(exportAssetResources) + " AssetResources.")
+    console.insertText("\nExporting " + String(exportAssets) + " Photo Assets, " + String(exportAssetResources) + " AssetResources.\n\n")
     
     let arrOptions = PHAssetResourceRequestOptions()
     arrOptions.isNetworkAccessAllowed = false
     var namesPool: [String] = []
+    let lock: NSLock = NSLock()
     for i in 0..<assets.count {
         if assetsFlags[i] <= 0 {
             continue
         }
-        
         let asset = assets.object(at: i)
         let assetResources = PHAssetResource.assetResources(for: asset)
         for j in 0..<assetResources.count {
             let resource = assetResources[j]
+            if !isValidAssetResource(assetResource: resource) {
+                continue
+            }
             let name = determineName(assetResource: resource, createTime: asset.creationDate!, pool: namesPool)
-            print(name)
             namesPool.append(name)
-            continue
-            
             let url = backDir.appendingPathComponent(name)
             if FileManager.default.fileExists(atPath: url.path) {
-                print(url.absoluteString + " already exists.")
+                console.insertText(url.path + " already exists.\n")
                 return
             }
+            console.insertText(resource.originalFilename + " is exporting as " + name + "\n")
             PHAssetResourceManager.default().writeData(for: resource, toFile: url, options: arrOptions, completionHandler: { (e) in
                 if e != nil {
-                    print(e!.localizedDescription)
+                    console.insertText(e!.localizedDescription + "\n")
                     exit(1)
                 } else {
+                    lock.lock()
                     assetsFlags[i]-=1
+                    lock.unlock()
                 }
             })
         }
     }
+    
+    while !allClear(array: assetsFlags) {
+        sleep(5)
+    }
+    console.insertText("\nExport finished, " + String(exportAssets) + " Photo Assets, " + String(exportAssetResources) + " AssetResources.\n")
+}
+
+func allClear(array: [Int]) -> Bool {
+    for i in 0..<array.count {
+        if array[i] != 0 {
+            return false
+        }
+    }
+    return true
 }
 
 func isValidAsset(phAsset: PHAsset, start: Date, end: Date) -> Bool {
@@ -120,11 +155,20 @@ func isValidAssetResource(assetResource: PHAssetResource) -> Bool {
 
 func determineName(assetResource: PHAssetResource, createTime: Date, pool: [String]) -> String {
     let origNameSplit = assetResource.originalFilename.split(separator: ".")
+    let beforeExt = origNameSplit[origNameSplit.count - 2].lowercased().suffix(4)
     let ext = origNameSplit[origNameSplit.count - 1].lowercased()
     let formatter = DateFormatter()
-    formatter.dateFormat = "yyyyMMdd-HHmm"
+    formatter.dateFormat = "yyyyMMdd-HHmmss"
     formatter.timeZone = TimeZone.current
-    return formatter.string(from: createTime) + "." + ext
+    let tentativeName = formatter.string(from: createTime) + "_" + beforeExt + "." + ext
+    if pool.contains(tentativeName) {
+        var i = 1
+        while pool.contains(formatter.string(from: createTime) + "_" + beforeExt + "_" + String(i) + "." + ext) {
+            i+=1
+        }
+        return formatter.string(from: createTime) + "_" + beforeExt + "_" + String(i) + "." + ext
+    }
+    return tentativeName
 }
 
 func printResourceType(type: PHAssetResourceType) {

@@ -12,12 +12,24 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow!
+            
+    @IBOutlet var startTimeField: NSTextField!
+    
+    @IBOutlet var endTimeField: NSTextField!
+    
+    @IBOutlet var backDir: NSTextField!
+    
+    @IBOutlet var console: NSScrollView!
 
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        window.close()
-        export()
-        NSApp.terminate(self)
+    @IBAction func exportButtonPressed(_ sender: NSButton) {
+        export(subdir: backDir.stringValue, startTime: startTimeField.stringValue, endTime: endTimeField.stringValue, console: console.documentView!)
     }
+    
+//    func applicationDidFinishLaunching(_ aNotification: Notification) {
+//        window.close()
+//        export()
+//        NSApp.terminate(self)
+//    }
 
 }
 

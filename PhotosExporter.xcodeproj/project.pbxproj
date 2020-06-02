@@ -7,41 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E1321E502229A71600046C00 /* StopWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1321E4F2229A71600046C00 /* StopWatch.swift */; };
-		E186D26022354098000BFCED /* FlatFolderDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E186D25F22354098000BFCED /* FlatFolderDescriptor.swift */; };
-		E1A55240222AB2EF00F72499 /* String+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A5523F222AB2EF00F72499 /* String+extensions.swift */; };
-		E1B119262251DC8100B53693 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B119252251DC8100B53693 /* Errors.swift */; };
+		10F3B8DD24861C8F0042D3AC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10F3B8DC24861C8F0042D3AC /* Images.xcassets */; };
 		E1E43AF6217CDABA000E76DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E43AF5217CDABA000E76DF /* AppDelegate.swift */; };
-		E1E43B10217CDB54000E76DF /* MetadataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E43B08217CDB53000E76DF /* MetadataLoader.swift */; };
-		E1E43B11217CDB54000E76DF /* IncrementalPhotosExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E43B09217CDB53000E76DF /* IncrementalPhotosExporter.swift */; };
-		E1E43B13217CDB54000E76DF /* MediaLibUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E43B0B217CDB53000E76DF /* MediaLibUtil.swift */; };
-		E1E43B1C217CDBE9000E76DF /* PhotosExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E43B17217CDB6A000E76DF /* PhotosExporter.swift */; };
-		E1E43B1D217CDBE9000E76DF /* SnapshotPhotosExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E43B18217CDB6E000E76DF /* SnapshotPhotosExporter.swift */; };
 		E1E43B43217CE0A9000E76DF /* MainExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E43B42217CE0A9000E76DF /* MainExporter.swift */; };
-		E1E43B46217CE0C8000E76DF /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E43B44217CE0C8000E76DF /* Logger.swift */; };
 		E1E43B63217CE16D000E76DF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1E43B62217CE16D000E76DF /* MainMenu.xib */; };
-		E1E43B65217CE1A0000E76DF /* filesystem-structure.png in Resources */ = {isa = PBXBuildFile; fileRef = E1E43B64217CE1A0000E76DF /* filesystem-structure.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E1321E4F2229A71600046C00 /* StopWatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopWatch.swift; sourceTree = "<group>"; };
-		E186D25F22354098000BFCED /* FlatFolderDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlatFolderDescriptor.swift; sourceTree = "<group>"; };
-		E1A5523F222AB2EF00F72499 /* String+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+extensions.swift"; sourceTree = "<group>"; };
-		E1B119252251DC8100B53693 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		10F3B8DC24861C8F0042D3AC /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		E1E43AF2217CDABA000E76DF /* PhotosExporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotosExporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1E43AF5217CDABA000E76DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E1E43AFC217CDABA000E76DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E1E43B05217CDB29000E76DF /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
-		E1E43B08217CDB53000E76DF /* MetadataLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataLoader.swift; sourceTree = "<group>"; };
-		E1E43B09217CDB53000E76DF /* IncrementalPhotosExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncrementalPhotosExporter.swift; sourceTree = "<group>"; };
-		E1E43B0B217CDB53000E76DF /* MediaLibUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaLibUtil.swift; sourceTree = "<group>"; };
-		E1E43B17217CDB6A000E76DF /* PhotosExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosExporter.swift; sourceTree = "<group>"; };
-		E1E43B18217CDB6E000E76DF /* SnapshotPhotosExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotPhotosExporter.swift; sourceTree = "<group>"; };
 		E1E43B39217CDC73000E76DF /* PhotosExporter.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = PhotosExporter.entitlements; sourceTree = "<group>"; };
 		E1E43B42217CE0A9000E76DF /* MainExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainExporter.swift; sourceTree = "<group>"; };
-		E1E43B44217CE0C8000E76DF /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		E1E43B62217CE16D000E76DF /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
-		E1E43B64217CE1A0000E76DF /* filesystem-structure.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filesystem-structure.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,9 +37,7 @@
 		E1E43AE9217CDABA000E76DF = {
 			isa = PBXGroup;
 			children = (
-				E1E43B05217CDB29000E76DF /* Readme.md */,
 				E1E43AF4217CDABA000E76DF /* PhotosExporter */,
-				E1E43B3D217CDFED000E76DF /* doc */,
 				E1E43AF3217CDABA000E76DF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -78,45 +55,12 @@
 			children = (
 				E1E43B42217CE0A9000E76DF /* MainExporter.swift */,
 				E1E43AF5217CDABA000E76DF /* AppDelegate.swift */,
-				E1E43B16217CDB62000E76DF /* exporter */,
-				E1E43B19217CDB8C000E76DF /* util */,
 				E1E43AFC217CDABA000E76DF /* Info.plist */,
 				E1E43B62217CE16D000E76DF /* MainMenu.xib */,
 				E1E43B39217CDC73000E76DF /* PhotosExporter.entitlements */,
+				10F3B8DC24861C8F0042D3AC /* Images.xcassets */,
 			);
 			path = PhotosExporter;
-			sourceTree = "<group>";
-		};
-		E1E43B16217CDB62000E76DF /* exporter */ = {
-			isa = PBXGroup;
-			children = (
-				E1E43B17217CDB6A000E76DF /* PhotosExporter.swift */,
-				E1E43B18217CDB6E000E76DF /* SnapshotPhotosExporter.swift */,
-				E1E43B09217CDB53000E76DF /* IncrementalPhotosExporter.swift */,
-				E1E43B0B217CDB53000E76DF /* MediaLibUtil.swift */,
-				E1E43B08217CDB53000E76DF /* MetadataLoader.swift */,
-				E186D25F22354098000BFCED /* FlatFolderDescriptor.swift */,
-			);
-			path = exporter;
-			sourceTree = "<group>";
-		};
-		E1E43B19217CDB8C000E76DF /* util */ = {
-			isa = PBXGroup;
-			children = (
-				E1E43B44217CE0C8000E76DF /* Logger.swift */,
-				E1321E4F2229A71600046C00 /* StopWatch.swift */,
-				E1A5523F222AB2EF00F72499 /* String+extensions.swift */,
-				E1B119252251DC8100B53693 /* Errors.swift */,
-			);
-			path = util;
-			sourceTree = "<group>";
-		};
-		E1E43B3D217CDFED000E76DF /* doc */ = {
-			isa = PBXGroup;
-			children = (
-				E1E43B64217CE1A0000E76DF /* filesystem-structure.png */,
-			);
-			path = doc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -183,8 +127,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1E43B65217CE1A0000E76DF /* filesystem-structure.png in Resources */,
 				E1E43B63217CE16D000E76DF /* MainMenu.xib in Resources */,
+				10F3B8DD24861C8F0042D3AC /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,17 +140,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1E43B43217CE0A9000E76DF /* MainExporter.swift in Sources */,
-				E1E43B1C217CDBE9000E76DF /* PhotosExporter.swift in Sources */,
-				E1321E502229A71600046C00 /* StopWatch.swift in Sources */,
-				E1E43B1D217CDBE9000E76DF /* SnapshotPhotosExporter.swift in Sources */,
-				E1B119262251DC8100B53693 /* Errors.swift in Sources */,
-				E1A55240222AB2EF00F72499 /* String+extensions.swift in Sources */,
 				E1E43AF6217CDABA000E76DF /* AppDelegate.swift in Sources */,
-				E1E43B13217CDB54000E76DF /* MediaLibUtil.swift in Sources */,
-				E186D26022354098000BFCED /* FlatFolderDescriptor.swift in Sources */,
-				E1E43B11217CDB54000E76DF /* IncrementalPhotosExporter.swift in Sources */,
-				E1E43B10217CDB54000E76DF /* MetadataLoader.swift in Sources */,
-				E1E43B46217CE0C8000E76DF /* Logger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,7 +201,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -323,6 +257,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -333,6 +268,7 @@
 		E1E43B01217CDABA000E76DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -341,6 +277,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.recyard.PhotoExporter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -350,6 +287,7 @@
 		E1E43B02217CDABA000E76DF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -358,6 +296,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.recyard.PhotoExporter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
