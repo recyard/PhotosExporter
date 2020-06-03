@@ -86,7 +86,7 @@ func export(subdir: String, startTime: String, endTime: String, console: NSView)
         }
     }
     
-    console.insertText("\nExporting " + String(exportAssets) + " Photo Assets, " + String(exportAssetResources) + " AssetResources.\n\n")
+    console.insertText("\nExporting " + String(exportAssets) + " Photo Assets (" + String(exportAssetResources) + " AssetResources).\n\n")
     
     let arrOptions = PHAssetResourceRequestOptions()
     arrOptions.isNetworkAccessAllowed = false
@@ -127,7 +127,7 @@ func export(subdir: String, startTime: String, endTime: String, console: NSView)
     while !allClear(array: assetsFlags) {
         sleep(5)
     }
-    console.insertText("\nExport finished, " + String(exportAssets) + " Photo Assets, " + String(exportAssetResources) + " AssetResources.\n")
+    console.insertText("\nExport finished, " + String(exportAssets) + " Photo Assets (" + String(exportAssetResources) + " AssetResources).\n")
 }
 
 func allClear(array: [Int]) -> Bool {

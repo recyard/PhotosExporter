@@ -768,7 +768,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C2R-il-bfL">
-                        <rect key="frame" x="227" y="311" width="96" height="21"/>
+                        <rect key="frame" x="207" y="311" width="136" height="21"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="U72-aJ-8XJ">
                             <font key="font" metaFont="system"/>
@@ -796,7 +796,7 @@
                     </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-54" y="-184"/>
+            <point key="canvasLocation" x="-54" y="-184.5"/>
         </window>
     </objects>
 </document>
