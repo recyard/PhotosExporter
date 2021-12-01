@@ -89,7 +89,7 @@ func export(subdir: String, startTime: String, endTime: String, console: NSView)
     console.insertText("\nExporting " + String(exportAssets) + " Photo Assets (" + String(exportAssetResources) + " AssetResources).\n\n")
     
     let arrOptions = PHAssetResourceRequestOptions()
-    arrOptions.isNetworkAccessAllowed = false
+    arrOptions.isNetworkAccessAllowed = true
     var namesPool: [String] = []
     let lock: NSLock = NSLock()
     for i in 0..<assets.count {
