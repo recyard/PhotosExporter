@@ -37,8 +37,13 @@ func export(subdir: String, startTime: String, endTime: String, console: NSView)
     }
     let backDir = downloads!.appendingPathComponent(subdir)
     if !FileManager.default.fileExists(atPath: backDir.path) {
-        console.insertText("Destination folder desn't exist.\n")
-        return
+        console.insertText("Destination folder doesn't exist, create one.\n")
+        do {
+            try FileManager.default.createDirectory(atPath: backDir.path, withIntermediateDirectories: true)
+        } catch {
+            console.insertText("Fail to create backup dir.\n")
+            return
+        }
     }
     let contents = try! FileManager.default.contentsOfDirectory(atPath: backDir.path)
     if contents.count > 0 {
@@ -110,10 +115,12 @@ func export(subdir: String, startTime: String, endTime: String, console: NSView)
                 console.insertText(url.path + " already exists.\n")
                 return
             }
+            //print(resource.originalFilename + " is exporting as " + name + "\n")
             console.insertText(resource.originalFilename + " is exporting as " + name + "\n")
             PHAssetResourceManager.default().writeData(for: resource, toFile: url, options: arrOptions, completionHandler: { (e) in
                 if e != nil {
-                    console.insertText(e!.localizedDescription + "\n")
+                    //print(name + ": " + e!.localizedDescription + "\n")
+                    console.insertText(name + ": " + e!.localizedDescription + "\n")
                     exit(1)
                 } else {
                     lock.lock()
